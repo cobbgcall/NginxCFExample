@@ -1,0 +1,20 @@
+AWSTemplateFormatVersion: 2010-09-09
+Description: This CF creates a bucket to deploy a nginx configuration 
+
+Resources:
+
+  myBucket:
+    Type: AWS::S3::Bucket
+    Properties: 
+      BucketName: !Sub '${AWS::StackName}-${AWS::AccountId}'
+      BucketEncryption:
+        ServerSideEncryptionConfiguration:
+          - ServerSideEncryptionByDefault:
+              SSEAlgorithm: 'aws:kms'  
+      Tags:
+        - Key: "Deploy"
+          Value: "Config"
+        - Key: "Environment"
+          Value: "Test"
+        - Key: "Project"
+          Value: "Flask"

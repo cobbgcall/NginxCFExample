@@ -1,0 +1,142 @@
+AWSTemplateFormatVersion: 2010-09-09
+Description: This is an EC2-Instance Sample
+
+Mappings:
+  RegionMap:
+    us-west-2:
+      myImage: ami-086648514e6734e83
+    us-east-1:
+      myImage: ami-0de4dcbef8f2fd507
+
+Parameters:
+  myVpcParm:
+    Description: "VPC id" 
+    Type: String
+
+Resources:
+
+  myEC2:
+    Type: AWS::EC2::Instance
+    Properties:
+      AvailabilityZone: "us-west-2a"
+      IamInstanceProfile: !Ref myInstanceProfile
+      ImageId: !FindInMap [ RegionMap, !Ref 'AWS::Region', myImage ]
+      InstanceType: "t2.micro"
+      BlockDeviceMappings:
+      - DeviceName: "/dev/sda1"
+        Ebs:
+          VolumeType: "gp3"
+          VolumeSize: "40"
+          Encrypted: "true"
+      Monitoring: true
+      SecurityGroupIds:
+        - Fn::GetAtt: [mySecurityGroup, GroupId]
+      SourceDestCheck: false
+      #SubnetId: "String"
+      Tags:
+        - Key: "Environment"
+          Value: "Test"
+        - Key: "Proyect"
+          Value: "Flask"
+      UserData:
+        Fn::Base64: |
+          #!/bin/bash -xe
+          apt-get update -y
+          apt-get install unzip -y
+          curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+          unzip awscliv2.zip
+          sudo ./aws/install
+          apt-get install python3 -y
+          apt-get install python3-pip -y
+          sudo update-alternatives --install /usr/bin/python python /usr/bin/python3 1
+          sudo update-alternatives --install /usr/bin/pip pip /usr/bin/pip3 1
+          apt-get install nginx -y
+          systemctl enable nginx
+          cd /
+          cd var
+          cd www
+          mkdir nginxtutorial
+          chmod -R 755 /var/www/nginxtutorial
+          aws s3 cp s3://bucketdeploy-002580115597/index.html /var/www/nginxtutorial/
+          cd /etc/nginx/sites-available
+          #service nginx stop
+          aws s3 cp s3://bucketdeploy-002580115597/nginxtutorial /etc/nginx/sites-available/
+          chmod 644 /etc/nginx/sites-available/nginxtutorial
+          rm /etc/nginx/sites-enabled/default
+          sudo ln -s /etc/nginx/sites-available/nginxtutorial /etc/nginx/sites-enabled/
+          service nginx restart
+
+  mySecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: "HTTPS Port open for EC2 instance" # Required
+      GroupName: "EC2 Instance"
+      SecurityGroupIngress:
+        - IpProtocol: tcp
+          FromPort: 80
+          ToPort: 80
+          CidrIp: 0.0.0.0/0        
+        - IpProtocol: tcp
+          FromPort: 22
+          ToPort: 22
+          CidrIp: 0.0.0.0/0
+      Tags:
+        - Key: "Environment"
+          Value: "Test"
+        - Key: "Project"
+          Value: "Flask"
+      VpcId: !Ref myVpcParm
+  
+  myInstanceProfile:
+    Type: AWS::IAM::InstanceProfile
+    Properties:
+      InstanceProfileName: "EC2accesstoS3andSSM"
+      Path: "/"
+      Roles: # Required
+        - !Ref myRole
+
+  myRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service:
+                - ec2.amazonaws.com
+            Action:
+              - 'sts:AssumeRole'
+      Description: "This role has accesso to S3 and SSM"
+      MaxSessionDuration: 7200
+      Path: /
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/service-role/AmazonEC2RoleforSSM
+      Policies:
+        - PolicyName: root
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement: 
+              - Sid: "S3Access"
+                Action: "s3:*"
+                Effect: Allow
+                Resource: 
+                  - "arn:aws:s3:::bucketdeploy-002580115597"
+                  - "arn:aws:s3:::bucketdeploy-002580115597/*"
+                
+      RoleName: "myRoleInstance"
+      Tags:
+        - Key: "Environment"
+          Value: "Test"
+        - Key: "Profile"
+          Value: "EC2"
+        - Key: "Project"
+          Value: "Flask"
+
+Outputs:
+  myEC2:
+    Description: "This the public ip from my EC2 Instance test"
+    Value: !GetAtt myEC2.PublicIp
+  myRegion:
+    Description: "This is the region in use"
+    Value: !Ref AWS::Region
