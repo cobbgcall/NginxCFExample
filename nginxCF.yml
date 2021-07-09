@@ -99,6 +99,7 @@ Resources:
       Path: /
       ManagedPolicyArns:
         - arn:aws:iam::aws:policy/service-role/AmazonEC2RoleforSSM
+        - arn:aws:iam::aws:policy/CloudWatchAgentServerPolicy
       Policies:
         - PolicyName: root
           PolicyDocument:
