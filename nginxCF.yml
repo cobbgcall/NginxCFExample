@@ -4,7 +4,7 @@ Description: This is an EC2-Instance Sample
 Mappings:
   RegionMap:
     us-west-2:
-      myImage: ami-086648514e6734e83
+      myImage: ami-031781c72206dadd5
     us-east-1:
       myImage: ami-0de4dcbef8f2fd507
 
@@ -41,20 +41,7 @@ Resources:
       UserData:
         Fn::Base64: |
           #!/bin/bash -xe
-          apt-get update -y
-          apt-get install unzip -y
-          curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
-          unzip awscliv2.zip
-          sudo ./aws/install
-          apt-get install python3 -y
-          apt-get install python3-pip -y
-          sudo update-alternatives --install /usr/bin/python python /usr/bin/python3 1
-          sudo update-alternatives --install /usr/bin/pip pip /usr/bin/pip3 1
-          apt-get install nginx -y
-          systemctl enable nginx
-          cd /
-          cd var
-          cd www
+          cd /var/www
           mkdir nginxtutorial
           chmod -R 755 /var/www/nginxtutorial
           aws s3 cp s3://bucketdeploy-002580115597/index.html /var/www/nginxtutorial/
