@@ -46,7 +46,6 @@ Resources:
           chmod -R 755 /var/www/nginxtutorial
           aws s3 cp s3://bucketdeploy-002580115597/index.html /var/www/nginxtutorial/
           cd /etc/nginx/sites-available
-          #service nginx stop
           aws s3 cp s3://bucketdeploy-002580115597/nginxtutorial /etc/nginx/sites-available/
           chmod 644 /etc/nginx/sites-available/nginxtutorial
           rm /etc/nginx/sites-enabled/default
