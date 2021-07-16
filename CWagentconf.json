@@ -1,6 +1,6 @@
 {
     "agent": {
-        "metrics_collection_interval" : 60,
+        "metrics_collection_interval" : 15,
         "region": "us-west-2",
         "logfile": "/var/log/amazon/CWagentconf.log",
         "debug": false 
@@ -9,7 +9,49 @@
     "metrics" : {
         "namespace" : "Deployment/QA",
         "append_dimensions" :[["${aws:InstanceId}"],["${aws:InstanceType}"],["${aws:ImageId}"]],
-        "" : ""
+        "metrics_collected" : {
+            "cpu": {
+                "resources" : ["*"],
+                "measurement" : [
+                    {
+                        "name" : "cpu_time_active" , "unit" : "seconds"
+                    },
+                    {
+                        "name" : "cpu_usage_active", "unit" : "percentage"
+                    }
+                ]
+            },
+
+            "disk" : {
+                "resources" : ["*"],
+                "measurement" : [
+                    {
+                        "name" : "disk_usage", "unit" : "bytes"
+                    },
+                    {
+                        "name" : "disk_usage_percent", "unit" : "percentage"
+                    },
+                    {
+                        "name" : "diskio_iops_in_progress", "unit" : "requests"
+                    }
+                ]
+            },
+
+            "mem" : {
+                "resources" : ["*"],
+                "measurement" : [
+                    {
+                        "name" : "men_free", "unit" : "bytes"
+                    },
+                    {
+                        "name" : "mem_used", "unit" : "bytes"
+                    },
+                    {
+                        "name" : "mem_total", "unit" : "bytes"
+                    }
+                ]
+            }
+        }
     },
 
     "logs_collected":{
