@@ -2,13 +2,16 @@
     "agent": {
         "metrics_collection_interval" : 15,
         "region": "us-west-2",
-        "logfile": "/var/log/amazon/CWagentconf.log",
-        "debug": false 
+        "logfile": "/var/log/amazon/CWagentconf.log"
     },
 
     "metrics" : {
         "namespace" : "Deployment/QA",
-        "append_dimensions" :[["${aws:InstanceId}"],["${aws:InstanceType}"],["${aws:ImageId}"]],
+        "append_dimensions" : {
+            "InstanceId" : "${aws:InstanceId}",
+            "InstanceType" : "${aws:InstanceType}",
+            "ImageId" : "${aws:ImageId}"   
+        },
         "metrics_collected" : {
             "cpu": {
                 "resources" : ["*"],
@@ -55,6 +58,15 @@
     },
 
     "logs_collected":{
-        
-    }
+        "files" : {
+            "collect_list" : [
+                {
+                    "file_path" : "/var/log/nginx/access.log",
+                    "log_group_name" : "Deployment/QA"
+                }
+            ]
+        }
+    },
+
+    "log_stream_name" : "nginx"
 }
