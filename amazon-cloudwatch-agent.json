@@ -29,13 +29,13 @@
                 "resources" : ["*"],
                 "measurement" : [
                     {
-                        "name" : "disk_usage", "unit" : "bytes"
+                        "name" : "disk_used", "unit" : "bytes"
                     },
                     {
-                        "name" : "disk_usage_percent", "unit" : "percentage"
+                        "name" : "disk_used_percent", "unit" : "percentage"
                     },
                     {
-                        "name" : "diskio_iops_in_progress", "unit" : "requests"
+                        "name" : "disk_total", "unit" : "bytes"
                     }
                 ]
             },
@@ -44,7 +44,7 @@
                 "resources" : ["*"],
                 "measurement" : [
                     {
-                        "name" : "men_free", "unit" : "bytes"
+                        "name" : "mem_free", "unit" : "bytes"
                     },
                     {
                         "name" : "mem_used", "unit" : "bytes"

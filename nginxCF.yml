@@ -52,7 +52,7 @@ Resources:
           sudo ln -s /etc/nginx/sites-available/nginxtutorial /etc/nginx/sites-enabled/
           service nginx restart
           #aws s3 cp s3://bucketdeploy-002580115597/amazon-cloudwatch-agent.json /opt/aws/amazon-cloudwatch-agent/etc/
-          #service amazon-cloudwatch-agent start
+          #/opt/aws/amazon-cloudwatch-agent/bin/amazon-cloudwatch-agent-ctl -a fetch-config -m ec2 -s -c file:/opt/aws/amazon-cloudwatch-agent/etc/amazon-cloudwatch-agent.json
 
   mySecurityGroup:
     Type: AWS::EC2::SecurityGroup
