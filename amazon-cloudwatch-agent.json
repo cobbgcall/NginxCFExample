@@ -63,7 +63,10 @@
                 "collect_list" : [
                     {
                         "file_path" : "/var/log/nginx/access.log",
-                        "log_group_name" : "Deployment"
+                        "log_group_name" : "Deployment",
+                        "log_stream_name" : "{instance_id}_Deployment",
+                        "timezone": "Local"
+
                     }
                 ]
             }
