@@ -1,2 +1,2 @@
-# NginxCFExample
-Installation Nginx and deploy a simple web site using Cloudformation and S3
+# Cloudformation Server Example
+Installation Nginx and deploy a simple web site using Cloudformation.
